@@ -4,6 +4,7 @@ taxonomies = [
     {name = "categories", feed = true},
     {name = "tags", feed = true},
 ]
+even_title = "lalalala"
 
 even_menu = [
     {url = "$BASE_URL", name = "Home"},
