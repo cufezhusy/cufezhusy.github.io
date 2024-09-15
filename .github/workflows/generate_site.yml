@@ -41,7 +41,7 @@ jobs:
         uses: canastro/copy-action@0.0.2
         with:
           source: config.toml
-          target: /output/public/config.toml
+          target: output/public/config.toml
       - name: Generate markdown
         run: |
           gh release download $ISITE_VERSION --repo kemingy/isite -p '*Linux_x86_64*' --output isite.tar.gz
