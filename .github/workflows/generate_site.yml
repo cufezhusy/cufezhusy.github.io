@@ -37,6 +37,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: copy files
+        uses: canastro/copy-action@0.0.2
+        with:
+          source: "https://github.com/cufezhusy/szhu.github.io/blob/main/config.toml"
+          target: /usr/local/bin/config.toml
       - name: Generate markdown
         run: |
           gh release download $ISITE_VERSION --repo kemingy/isite -p '*Linux_x86_64*' --output isite.tar.gz
