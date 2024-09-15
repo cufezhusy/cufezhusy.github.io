@@ -8,5 +8,10 @@
 - 中央财经大学毕业
 - 喜欢啤酒，跑步，足球，音乐，播客和旅行。
 
+TODO
+
+- [ ] 改一个模板
+- [ ] 写一写专业方面的文章，关于金融和代码。
+
 ![IMG_0186](https://github.com/user-attachments/assets/cd78ab97-1b65-43ed-ad0f-f7238ff93098)
 
