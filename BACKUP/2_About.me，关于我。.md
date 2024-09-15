@@ -14,6 +14,7 @@ TODO
 - [ ] 写一写专业方面的文章，关于金融和代码。
 - [ ] 记录自己的旅行。
 - [ ] 记录自己的FM旅程。
+- [ ] 记录在丹麦的生活。
 
 ![IMG_0186](https://github.com/user-attachments/assets/cd78ab97-1b65-43ed-ad0f-f7238ff93098)
 
