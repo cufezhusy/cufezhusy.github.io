@@ -3,9 +3,9 @@
 > The more you praise and celebrate your life, the more there is in life to celebrate.
 
 - 一个金融行业的码农。交易，风险管理和写代码。
-- 住在哥本哈根
+- 住在哥本哈根。
 - 喜欢编程和一切自己动手做的事情。
-- 中央财经大学毕业
+- 中央财经大学毕业，在国内待过四大和一家外资行。
 - 喜欢啤酒，跑步，足球，音乐，播客和旅行。
 - 古早数码产品爱好者。是的我还在使用iPod。
 
