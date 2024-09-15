@@ -40,7 +40,7 @@ jobs:
       - name: copy files
         uses: canastro/copy-action@0.0.2
         with:
-          source: "https://github.com/cufezhusy/szhu.github.io/blob/main/config.toml"
+          source: config.toml
           target: /usr/local/bin/config.toml
       - name: Generate markdown
         run: |
