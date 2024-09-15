@@ -17,7 +17,3 @@ TODO
 - [ ] 记录在丹麦的生活。
 - [ ] 科技文章，博客搭建等等
 
-
-
-![IMG_0186](https://github.com/user-attachments/assets/cd78ab97-1b65-43ed-ad0f-f7238ff93098)
-
