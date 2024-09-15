@@ -1,3 +1,5 @@
+base_url = "https://cufezhusy.github.io/szhu.github.io/"
+
 taxonomies = [
     {name = "categories", feed = true},
     {name = "tags", feed = true},
