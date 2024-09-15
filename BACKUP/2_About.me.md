@@ -7,3 +7,6 @@
 - 喜欢编程和一切自己动手做的事情。
 - 中央财经大学毕业
 - 喜欢啤酒，跑步，足球，音乐，播客和旅行。
+
+![IMG_0186](https://github.com/user-attachments/assets/cd78ab97-1b65-43ed-ad0f-f7238ff93098)
+
