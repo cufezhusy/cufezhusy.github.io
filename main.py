@@ -10,7 +10,7 @@ from lxml.etree import CDATA
 from marko.ext.gfm import gfm as marko
 
 MD_HEAD = """## [cuezhusy Blog](https://szhu.github.io/)
-My personal blog([About Me](https://github.com/cufezhusy/szhu.github.io/issues/2)
+My personal blog([About Me])(https://github.com/cufezhusy/szhu.github.io/issues/2)
 """
 
 BACKUP_DIR = "BACKUP"
