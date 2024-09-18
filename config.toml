@@ -1,4 +1,4 @@
-base_url = "https://cufezhusy.github.io/cufezhusy.github.io/"
+base_url = "https://cufezhusy.github.io/"
 theme = "even"
 taxonomies = [
     {name = "categories", feed = true},
