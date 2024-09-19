@@ -34,7 +34,7 @@ jobs:
       USER: ${{ github.repository_owner }}
       REPO: ${{ github.event.repository.name }}
       # BASE_URL: https://${{ github.event.repository.name }}
-      BASE_URL: https:/${{ github.event.repository.name }}
+      BASE_URL: https://${{ github.event.repository.name }}
       BLOG_TITLE: Cufezhusy's Blog
     steps:
       - name: Checkout
