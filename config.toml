@@ -6,7 +6,7 @@ taxonomies = [
 ]
 
 [extra]
-even_title = "且将新火试新茶，诗酒趁年华。| Brew new tea with fresh fire, savoring poetry and wine while time still favors us."
+even_title = "Cufezhusy's Blog"
 even_menu = [
     {url = "$BASE_URL", name = "Home"},
     {url = "$BASE_URL/tags/my-life/", name = "My Life"},
