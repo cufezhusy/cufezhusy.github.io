@@ -1,6 +1,6 @@
 base_url = "https://cufezhusy.github.io/"
 generate_feeds = true
-feed_filenames = "rss.xml"
+feed_filenames = ["rss.xml"]
 theme = "even"
 taxonomies = [
     {name = "categories", feed = true},
