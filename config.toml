@@ -1,13 +1,12 @@
 base_url = "https://cufezhusy.github.io/"
 theme = "even"
-generate_feeds = true
-feed_filenames = "$BASE_URL/rss.xml"
 taxonomies = [
     {name = "categories", feed = true},
     {name = "tags", feed = true},
 ]
-
 [extra]
+generate_feeds = true
+feed_filenames = "$BASE_URL/rss.xml"
 even_title = "Cufezhusy's Blog"
 even_menu = [
     {url = "$BASE_URL", name = "Home"},
