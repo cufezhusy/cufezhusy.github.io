@@ -1,9 +1,10 @@
-# [About me|关于我](https://github.com/cufezhusy/szhu.github.io/issues/2)
+# [About me|关于我](https://github.com/cufezhusy/cufezhusy.github.io/issues/2)
 
 > The more you praise and celebrate your life, the more there is in life to celebrate.
 
 - 一个金融行业的码农。交易，风险管理和写Python代码。
-- 住在哥本哈根。。。
+- 我的Linkedin: [https://www.linkedin.com/in/shengyaozhu/](url)
+- 住在哥本哈根。
 - 喜欢编程和一切自己动手做的事情。
 - 中央财经大学毕业，在国内待过四大和一家外资行。
 - 丹麦留学，之后留下来搬砖。
