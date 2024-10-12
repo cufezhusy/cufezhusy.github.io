@@ -1,12 +1,23 @@
-# [About me](https://github.com/cufezhusy/szhu.github.io/issues/2)
+# [About me](https://github.com/cufezhusy/cufezhusy.github.io/issues/2)
 
 > The more you praise and celebrate your life, the more there is in life to celebrate.
 
-- 一个金融行业的码农
-- 哥本哈根
+- 一个金融行业的码农。交易，风险管理和写Python代码。
+- 我的Linkedin: [https://www.linkedin.com/in/shengyaozhu/](url)
+- 住在哥本哈根。
 - 喜欢编程和一切自己动手做的事情。
-- 中央财经大学毕业
+- 中央财经大学毕业，在国内待过四大和一家外资行。
+- 丹麦留学，之后留下来搬砖。
 - 喜欢啤酒，跑步，足球，音乐，播客和旅行。
+- 利物浦球迷。
+- 古早数码产品爱好者。是的我还在使用iPod classical。
 
-![IMG_0186](https://github.com/user-attachments/assets/cd78ab97-1b65-43ed-ad0f-f7238ff93098)
+TODO
+
+- [x] 改一个模板
+- [ ] 写一写专业方面的文章，关于金融和代码。
+- [ ] 记录自己的旅行。
+- [ ] 记录自己的FM旅程。
+- [ ] 记录在丹麦的生活。
+- [ ] 科技文章，博客搭建等等
 
