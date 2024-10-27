@@ -3,7 +3,7 @@
 > The more you praise and celebrate your life, the more there is in life to celebrate.
 
 - 一个金融行业的码农。交易，风险管理和写Python代码。
-- 我的Linkedin: [https://www.linkedin.com/shengyaozhu/](url)
+- 我的Linkedin:  [https://www.linkedin.com/shengyaozhu/](url)
 - 住在哥本哈根。
 - 喜欢编程和一切自己动手做的事情。
 - 中央财经大学毕业，在国内待过四大和一家外资行。
