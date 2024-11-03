@@ -2,11 +2,11 @@
 My personal blog([About Me])(https://github.com/cufezhusy/szhu.github.io/issues/2)
 
 ## 最近更新
+- [周末结束，下周好好上班。](https://github.com/cufezhusy/cufezhusy.github.io/issues/13)--2024-11-03
 - [FM Journey Man: From forest green to USL Dunkerque](https://github.com/cufezhusy/cufezhusy.github.io/issues/12)--2024-11-02
 - [冬令时到了](https://github.com/cufezhusy/cufezhusy.github.io/issues/11)--2024-10-27
 - [转载：人人都可以写作](https://github.com/cufezhusy/cufezhusy.github.io/issues/10)--2024-10-22
 - [Week42: 继续折腾RssHub以及丹麦的秋假](https://github.com/cufezhusy/cufezhusy.github.io/issues/9)--2024-10-20
-- [折腾了一会儿RSSHUB](https://github.com/cufezhusy/cufezhusy.github.io/issues/8)--2024-10-13
 ## FM
 - [FM Journey Man: From forest green to USL Dunkerque](https://github.com/cufezhusy/cufezhusy.github.io/issues/12)--2024-11-02
 ## My life
@@ -18,5 +18,6 @@ My personal blog([About Me])(https://github.com/cufezhusy/szhu.github.io/issues/
 ## 转载
 - [转载：人人都可以写作](https://github.com/cufezhusy/cufezhusy.github.io/issues/10)--2024-10-22
 ## 鸡毛蒜皮
+- [周末结束，下周好好上班。](https://github.com/cufezhusy/cufezhusy.github.io/issues/13)--2024-11-03
 - [在哥本哈根跑步](https://github.com/cufezhusy/cufezhusy.github.io/issues/7)--2024-10-08
 - [Etihad系统的选座位Bug](https://github.com/cufezhusy/cufezhusy.github.io/issues/6)--2024-10-06
