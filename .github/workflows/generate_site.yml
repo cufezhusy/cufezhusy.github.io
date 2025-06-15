@@ -29,8 +29,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
-      ISITE_VERSION: v0.1.4
-      ZOLA_VERSION: v0.19.2
+      ISITE_VERSION: v0.2.2
+      ZOLA_VERSION: v0.20.0
       USER: ${{ github.repository_owner }}
       REPO: ${{ github.event.repository.name }}
       # BASE_URL: https://${{ github.event.repository.name }}
@@ -49,9 +49,9 @@ jobs:
           cp config.toml output/config.toml
           cd output && zola build --base-url $BASE_URL
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: 'output/public'
       - name: Deploy to GitHub Pages
