@@ -12,12 +12,4 @@
 - 利物浦球迷。
 - 古早数码产品爱好者。是的我还在使用iPod classical。
 
-TODO
-
-- [x] 改一个模板
-- [ ] 写一写专业方面的文章，关于金融和代码。
-- [ ] 记录自己的旅行。
-- [ ] 记录自己的FM旅程。
-- [ ] 记录在丹麦的生活。
-- [ ] 科技文章，博客搭建等等
-
+> 本博客使用Github Issue搭建，如果要评论还请移步 [issue 评论区](https://github.com/cufezhusy/cufezhusy.github.io/issues)
