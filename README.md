@@ -2,11 +2,11 @@
 My personal blog([About Me])(https://github.com/cufezhusy/szhu.github.io/issues/2)
 
 ## 最近更新
+- [夏天了](https://github.com/cufezhusy/cufezhusy.github.io/issues/22)--2026-07-13
 - [哥本哈根的朝九晚五美的不像话](https://github.com/cufezhusy/cufezhusy.github.io/issues/21)--2026-04-26
 - [我才四十岁，世界这么美好，我还想多看看呀。](https://github.com/cufezhusy/cufezhusy.github.io/issues/20)--2026-04-19
 - [发现了好多年前写的博客](https://github.com/cufezhusy/cufezhusy.github.io/issues/19)--2025-10-05
 - [新公司的健身房](https://github.com/cufezhusy/cufezhusy.github.io/issues/18)--2025-10-01
-- [换工作了，来到斯德哥尔摩出差](https://github.com/cufezhusy/cufezhusy.github.io/issues/17)--2025-09-28
 ## FM
 - [FM24 Journey Man: From forest green to USL Dunkerque](https://github.com/cufezhusy/cufezhusy.github.io/issues/12)--2024-11-02
 - [Etihad系统的选座位Bug](https://github.com/cufezhusy/cufezhusy.github.io/issues/6)--2024-10-06
