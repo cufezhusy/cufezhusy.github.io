@@ -2,11 +2,11 @@
 My personal blog([About Me])(https://github.com/cufezhusy/szhu.github.io/issues/2)
 
 ## 最近更新
+- [How to Fix Invisible Mouse & White Screen in HOI4 on Linux (Steam)|如何在 Linux (Steam) 上解决《钢铁雄心4》鼠标隐形与开局白屏问题](https://github.com/cufezhusy/cufezhusy.github.io/issues/25)--2026-07-25
 - [这应该是我最开心的一个夏天](https://github.com/cufezhusy/cufezhusy.github.io/issues/24)--2026-07-15
 - [早晨跑步有风有阳光](https://github.com/cufezhusy/cufezhusy.github.io/issues/23)--2026-07-14
 - [夏天了](https://github.com/cufezhusy/cufezhusy.github.io/issues/22)--2026-07-13
 - [哥本哈根的朝九晚五美的不像话](https://github.com/cufezhusy/cufezhusy.github.io/issues/21)--2026-04-26
-- [我才四十岁，世界这么美好，我还想多看看呀。](https://github.com/cufezhusy/cufezhusy.github.io/issues/20)--2026-04-19
 ## FM
 - [FM24 Journey Man: From forest green to USL Dunkerque](https://github.com/cufezhusy/cufezhusy.github.io/issues/12)--2024-11-02
 - [Etihad系统的选座位Bug](https://github.com/cufezhusy/cufezhusy.github.io/issues/6)--2024-10-06
