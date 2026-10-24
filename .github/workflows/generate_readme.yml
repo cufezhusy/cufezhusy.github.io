@@ -20,7 +20,13 @@ jobs:
   sync:
     name: Generate README
     runs-on: ubuntu-latest
-    if: github.repository_owner_id == github.event.issue.user.id || github.event_name == 'push'
+    if: |
+      github.event_name == 'push' ||
+      (github.event_name == 'issues' && github.event.issue.user.login == github.repository_owner) ||
+      (github.event_name == 'issue_comment' && github.event.comment.user.login == github.repository_owner)
+    permissions:
+      contents: write
+      issues: read
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -39,9 +45,13 @@ jobs:
           pip install -r requirements.txt
 
       - name: Generate new md
+        env:
+          G_T: ${{ secrets.G_T }}
+          REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
           source venv/bin/activate
-          python main.py ${{ secrets.G_T }} ${{ github.repository }} --issue_number '${{ github.event.issue.number }}'
+          python main.py "$G_T" "$REPO" --issue_number "$ISSUE_NUMBER"
 
       - name: Push README
         run: |

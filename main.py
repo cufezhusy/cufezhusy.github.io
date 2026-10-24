@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import argparse
+import html
 import os
 import re
+from urllib.parse import urlparse
 
-import markdown
 from feedgen.feed import FeedGenerator
 from github import Github
 from lxml.etree import CDATA
@@ -21,8 +22,12 @@ FRIENDS_LABELS = ["Friends"]
 ABOUT_LABELS = ["About"]
 IGNORE_LABELS = FRIENDS_LABELS + TOP_ISSUES_LABELS + TODO_ISSUES_LABELS + ABOUT_LABELS
 
-FRIENDS_TABLE_HEAD = "| Name | Link | Desc | \n | ---- | ---- | ---- |\n"
-FRIENDS_TABLE_TEMPLATE = "| {name} | {link} | {desc} |\n"
+FRIENDS_TABLE_HEAD = (
+    "<table>\n"
+    "<thead><tr><th>Name</th><th>Link</th><th>Desc</th></tr></thead>\n"
+    "<tbody>\n"
+)
+FRIENDS_TABLE_TEMPLATE = "<tr><td>{name}</td><td>{link}</td><td>{desc}</td></tr>\n"
 FRIENDS_INFO_DICT = {
     "名字": "",
     "链接": "",
@@ -46,6 +51,14 @@ def is_hearted_by_me(comment, me):
     return False
 
 
+def _safe_link(url):
+    url = url.strip()
+    if urlparse(url).scheme in ("http", "https"):
+        escaped = html.escape(url, quote=True)
+        return f'<a href="{escaped}">{escaped}</a>'
+    return html.escape(url, quote=True)
+
+
 def _make_friend_table_string(s):
     info_dict = FRIENDS_INFO_DICT.copy()
     try:
@@ -58,7 +71,9 @@ def _make_friend_table_string(s):
                 continue
             info_dict[string_info_list[0]] = string_info_list[1]
         return FRIENDS_TABLE_TEMPLATE.format(
-            name=info_dict["名字"], link=info_dict["链接"], desc=info_dict["描述"]
+            name=html.escape(info_dict["名字"], quote=True),
+            link=_safe_link(info_dict["链接"]),
+            desc=html.escape(info_dict["描述"], quote=True),
         )
     except Exception as e:
         print(str(e))
@@ -165,7 +180,7 @@ def add_md_firends(repo, md, me):
                 except Exception as e:
                     print(str(e))
                     pass
-    s = markdown.markdown(s, output_format="html", extensions=["extra"])
+    s += "</tbody>\n</table>\n"
     with open(md, "a+", encoding="utf-8") as md:
         md.write(
             f"## [友情链接](https://github.com/{str(me)}/gitblog/issues/{friends_issue_number})\n"

@@ -31,6 +31,9 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       ISITE_VERSION: v0.2.2
       ZOLA_VERSION: v0.20.0
+      # 固定制品的 SHA256，更新版本时需同步更新
+      ISITE_SHA256: cfacb752ba5828635bef2e3077c24a53c18f02a6e4a7f610a80126d60653a188
+      ZOLA_SHA256: ca7ed5b33a739c5b5b35a0e207e5c3578a652cd12b61c675763b3ff34c322d08
       USER: ${{ github.repository_owner }}
       REPO: ${{ github.event.repository.name }}
       # BASE_URL: https://${{ github.event.repository.name }}
@@ -39,13 +42,31 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/gitblog-deps
+          key: gitblog-deps-${{ runner.os }}-isite-${{ env.ISITE_VERSION }}-zola-${{ env.ZOLA_VERSION }}
+
+      - name: Download and verify dependencies
+        run: |
+          set -euo pipefail
+          CACHE="$HOME/.cache/gitblog-deps"
+          mkdir -p "$CACHE"
+          if [ ! -f "$CACHE/isite.tar.gz" ]; then
+            gh release download "$ISITE_VERSION" --repo kemingy/isite -p '*Linux_x86_64*' --output "$CACHE/isite.tar.gz"
+          fi
+          if [ ! -f "$CACHE/zola.tar.gz" ]; then
+            gh release download "$ZOLA_VERSION" --repo getzola/zola -p '*x86_64-unknown-linux*' --output "$CACHE/zola.tar.gz"
+          fi
+          echo "$ISITE_SHA256  $CACHE/isite.tar.gz" | sha256sum -c -
+          echo "$ZOLA_SHA256  $CACHE/zola.tar.gz" | sha256sum -c -
+          tar zxf "$CACHE/isite.tar.gz" -C /tmp && mv /tmp/isite /usr/local/bin
+          tar zxf "$CACHE/zola.tar.gz" -C /tmp && mv /tmp/zola /usr/local/bin
+
       - name: Generate markdown
         run: |
-          gh release download $ISITE_VERSION --repo kemingy/isite -p '*Linux_x86_64*' --output isite.tar.gz
-          tar zxf isite.tar.gz && mv isite /usr/local/bin
           isite generate --user $USER --repo $REPO --theme even --theme-repo getzola/even --title $BLOG_TITLE
-          gh release download $ZOLA_VERSION --repo getzola/zola -p '*x86_64-unknown-linux*' --output zola.tar.gz
-          tar zxf zola.tar.gz && mv zola /usr/local/bin
           cp config.toml output/config.toml
           cd output && zola build --base-url $BASE_URL
       - name: Setup Pages
