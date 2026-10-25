@@ -14,12 +14,14 @@ even_menu = [
 ]
 
 # Static comments rendered from the GitHub issue of each post at build time.
-# See scripts/extract_comments.py and templates/comments.html.
+# Only comments the owner approved (👍/❤️ reaction added after the comment's
+# last edit) are shown. See scripts/approve_comments.py,
+# scripts/extract_comments.py and templates/comments.html.
 [extra.comments]
 enabled = true
 heading = "评论"
-empty_text = "还没有评论，欢迎在本文对应的 GitHub Issue 下留言。"
+empty_text = "还没有评论；评论经博主点赞（👍/❤️）后显示。"
 issue_link_text = "在 GitHub 上参与讨论"
-hint = "评论发布在本文对应的 GitHub Issue 中（需要 GitHub 账号），请控制在 140 字以内；超出部分只在 GitHub 显示。"
+hint = "评论发布在本文对应的 GitHub Issue 中（需要 GitHub 账号），请控制在 140 字以内；博主点赞（👍/❤️）后才会显示在这里，超出 140 字的部分只在 GitHub 显示。"
 # 头像会从 avatars.githubusercontent.com 加载；设为 false 可避免这类第三方图片请求。
 show_avatars = true

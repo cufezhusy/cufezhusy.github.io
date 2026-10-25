@@ -10,13 +10,16 @@ on:
       - labeled
       - unlabeled
   # Any comment on one of the owner's posts refreshes the static comment
-  # section. Comments are untrusted input, so the rendering/build steps below
-  # never receive a token.
+  # section. Only comments the owner approved (👍/❤️ reaction) are rendered;
+  # reactions do not emit workflow events, so the daily schedule below is what
+  # makes a newly approved comment appear without a manual dispatch.
   issue_comment:
     types:
       - created
       - edited
       - deleted
+  schedule:
+    - cron: "23 2 * * *"
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -37,6 +40,7 @@ jobs:
     # comments on pull requests.
     if: |
       github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'schedule' ||
       (github.event_name == 'issues' && github.event.issue.user.login == github.repository_owner) ||
       (github.event_name == 'issue_comment' && github.event.issue.pull_request == null && github.event.issue.user.login == github.repository_owner)
     environment:
@@ -142,13 +146,26 @@ jobs:
             fi
           done
 
+      # Anyone can comment on a public issue, so only comments the owner
+      # approved (👍/❤️ reaction, added after the comment's last edit) are
+      # rendered. Reactions live on GitHub, not in isite's output. This step
+      # needs a token to read them; the render step below stays token-free.
+      - name: Collect owner-approved comments
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          REPO_OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          python3 scripts/approve_comments.py /tmp/approved-comments.json
+
       - name: Render and sanitize comments
         run: |
           set -euo pipefail
           python -m venv venv
           source venv/bin/activate
           python -m pip install --disable-pip-version-check --require-hashes -r requirements-site.txt
-          python scripts/extract_comments.py output/content output/comments.json
+          python scripts/extract_comments.py output/content output/comments.json /tmp/approved-comments.json
 
       - name: Assemble Zola project
         run: |
