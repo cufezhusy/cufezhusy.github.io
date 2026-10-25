@@ -8,6 +8,8 @@ on:
   workflow_dispatch:
   issues:
     types: [opened, edited]
+  # Owner-only in practice: the job `if` below rejects comments from anyone
+  # else, so this trigger cannot be used by a third party to run the job.
   issue_comment:
     types: [created, edited]
   push:
@@ -18,17 +20,32 @@ on:
       - requirements.txt
       - requirements.in
 
+# Default to read-only; the job opts into contents: write for the push below.
+permissions:
+  contents: read
+
+# Serialise runs: two events can otherwise race and push conflicting commits.
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
 jobs:
   sync:
     name: Generate README
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: |
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'push' ||
       (github.event_name == 'issues' && github.event.issue.user.login == github.repository_owner) ||
-      (github.event_name == 'issue_comment' && github.event.issue.pull_request == null && github.event.comment.user.login == github.repository_owner)
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request == null &&
+       github.event.issue.user.login == github.repository_owner &&
+       github.event.comment.user.login == github.repository_owner)
     permissions:
+      # Needed only by the final `git push` step.
       contents: write
+      # Read issues/comments to regenerate README and BACKUP.
       issues: read
     steps:
       - name: Checkout
@@ -61,12 +78,20 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
           source venv/bin/activate
-          python main.py "$GH_TOKEN" "$REPO" --issue_number "$ISSUE_NUMBER"
+          # The token stays in the environment (main.py reads GH_TOKEN) instead
+          # of being visible in the process list as an argv value.
+          python main.py "$REPO" --issue_number "$ISSUE_NUMBER"
 
       - name: Push README
         run: |
+          set -euo pipefail
           git config --local user.email "shengyao.zhu@gmail.com"
           git config --local user.name "cufezhusy"
-          git add BACKUP/*.md
-          git commit -a -m 'update new blog' || echo "nothing to commit"
-          git push || echo "nothing to push"
+          git add -- README.md BACKUP
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+            exit 0
+          fi
+          git commit -m 'update new blog'
+          # Do not swallow failures: a broken push should fail the run loudly.
+          git push

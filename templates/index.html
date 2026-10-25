@@ -1,0 +1,143 @@
+{#-
+  Local override of getzola/even `templates/index.html`.
+
+  Upstream: https://github.com/getzola/even/blob/994bfdb426a75f6615a2da649d9eb57870b1ca88/templates/index.html
+
+  Changes from upstream:
+  * load `slideout.min.js` from `static/` instead of cdnjs, so the site has no
+    third-party script origin and the policy below can use `script-src 'self'`;
+  * add a Content-Security-Policy meta tag. GitHub Pages cannot set response
+    headers, so a meta tag is the only way to ship a policy;
+  * drop the optional KaTeX CDN block: KaTeX is disabled today and the CDN
+    scripts would need extra CSP exceptions. If you enable it later, add the
+    tags back with SRI and extend script-src/style-src deliberately.
+
+  Keep this file in sync with the theme when EVEN_REVISION changes (diff it
+  against upstream, like templates/page.html).
+-#}
+{% import "post_macros.html" as post_macros %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+      <!-- GitHub Pages cannot set response headers, so the policy lives here.
+           style-src needs 'unsafe-inline' because the comment section ships an
+           inline <style> block; script-src stays 'self' (no CDN, no inline
+           scripts). -->
+      <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+
+    {% if page %}
+      {% if page.description %}
+      <meta name="description" content="{{ page.description }}" />
+      {% elif config.description %}
+      <meta name="description" content="{{ config.description }}" />
+      {% endif %}
+    {% elif config.description %}
+      <meta name="description" content="{{ config.description }}" />
+    {% endif %}
+
+      <title>{% block title %}{{ config.title }}{% endblock title %}</title>
+
+      {% if config.generate_feeds %}
+          {% for feed in config.feed_filenames %}
+          <link rel="alternate" type={% if feed == "atom.xml" %}"application/atom+xml"{% else %}"application/rss+xml"{% endif %} title="RSS" href="{{ get_url(path=feed) | safe }}">
+          {% endfor %}
+      {% endif %}
+
+      {% block js %}
+          <script src="{{ get_url(path="slideout.min.js", trailing_slash=false) }}"></script>
+      {% endblock js %}
+
+      {% block css %}
+          <link rel="stylesheet" href="{{ get_url(path="site.css", trailing_slash=false) }}">
+      {% endblock css %}
+
+      {% block extra_head %}
+      {% endblock extra_head %}
+    </head>
+
+    <body>
+        <div class="container">
+
+            <div id="mobile-navbar" class="mobile-navbar">
+              <div class="mobile-header-logo">
+                <a href="{{ config.base_url }}" class="logo">{{ config.extra.even_title }}</a>
+              </div>
+              <div class="mobile-navbar-icon icon-out">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+
+            <nav id="mobile-menu" class="mobile-menu slideout-menu slideout-menu-left">
+              <ul class="mobile-menu-list">
+                {% for item in config.extra.even_menu %}
+                    <li class="mobile-menu-item">
+                        <a href="{{ item.url | replace(from="$BASE_URL", to=config.base_url) }}">
+                            {{ item.name }}
+                        </a>
+                    </li>
+                {% endfor %}
+              </ul>
+            </nav>
+
+            <header id="header">
+                <div class="logo"><a href="{{ config.base_url }}">{{ config.extra.even_title }}</a></div>
+                <nav class="menu">
+                    <ul>
+                        {% for item in config.extra.even_menu %}
+                            <li>
+                                <a href="{{ item.url | replace(from="$BASE_URL", to=config.base_url) }}">
+                                    {{ item.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            </header>
+
+            <main>
+                <div class="content" id="mobile-panel">
+                    {% block content %}
+                        <div class="posts">
+                            {% for page in paginator.pages %}
+                                <article class="post">
+                                    {{ post_macros::title(page=page) }}
+                                    <div class="post__summary">
+                                        {{ page.summary | safe }}
+                                    </div>
+                                    <div class="read-more">
+                                        <a href="{{ page.permalink }}">Read more...</a>
+                                    </div>
+                                </article>
+                            {% endfor %}
+                        </div>
+                        <nav class="pagination">
+                            {% if paginator.previous %}
+                                <a class="previous" href="{{ paginator.previous }}">‹ Previous</a>
+                            {% endif %}
+                            {% if paginator.next %}
+                                <a class="next" href="{{ paginator.next }}">Next ›</a>
+                            {% endif %}
+                        </nav>
+                    {% endblock content %}
+                </div>
+            </main>
+
+            {% block footer %}
+            {% endblock footer %}
+        </div>
+
+      {% block js_body %}
+          <script type="text/javascript" src="{{ get_url(path="even.js", trailing_slash=false) }}" ></script>
+      {% endblock js_body %}
+    </body>
+
+</html>

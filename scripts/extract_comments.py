@@ -216,10 +216,14 @@ def split_front_matter(path: Path) -> tuple[str, str]:
     string must not be mistaken for the front matter terminator, so candidates
     are accepted only when the TOML prefix parses.
 
-    A false positive (``+++`` inside a comment) makes the prefix unparseable.
-    Retry from one character after it while keeping the candidate start
-    fixed: starting the next candidate *after* the ``+++`` would drop the
-    front matter prefix, so the real terminator could never parse.
+    Candidates are tried from the end. In isite output the front matter ends at
+    the last ``+++`` before the post body, so a normal file parses once. Any
+    ``+++`` lines from comments sit *before* that terminator; scanning forward
+    would parse a growing prefix for each one (O(n^2)), letting an unapproved
+    comment slow every build down. Earlier candidates are still tried when the
+    body itself contains ``+++`` lines. A comment cannot make an earlier
+    prefix parseable, because the TOML string holding it is never closed
+    before the real terminator.
     """
     text = normalize_text(path.read_text(encoding="utf-8"))
     opening = re.match(r"[ \t\r\n]*\+\+\+\n", text)
@@ -227,18 +231,19 @@ def split_front_matter(path: Path) -> tuple[str, str]:
         raise SystemExit(f"error: {path}: missing TOML front matter")
 
     start = opening.end()
-    search_from = start
-    while True:
-        end = text.find("\n+++\n", search_from)
-        if end == -1:
-            raise SystemExit(f"error: {path}: unterminated TOML front matter")
+    positions = [
+        match.start()
+        for match in re.finditer(r"\n\+\+\+\n", text)
+        if match.start() >= start
+    ]
+    for end in reversed(positions):
         candidate = text[start:end]
         try:
             tomllib.loads(candidate)
         except tomllib.TOMLDecodeError:
-            search_from = end + 1
             continue
         return candidate, text[end + 5 :]
+    raise SystemExit(f"error: {path}: unterminated TOML front matter")
 
 
 def safe_url(value: object, prefix: str) -> str:

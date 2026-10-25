@@ -9,9 +9,11 @@ on:
       - reopened
       - labeled
       - unlabeled
-  # Any comment on one of the owner's posts refreshes the static comment
-  # section. Only comments the owner approved (👍/❤️ reaction) are rendered;
-  # reactions do not emit workflow events, so the daily schedule below is what
+  # Comments are only rendered after the owner approves them (👍/❤️ reaction),
+  # so a stranger's comment does not need a rebuild. The job-level `if` below
+  # therefore only lets the owner's own comments through: otherwise anyone
+  # could queue (and, via cancel-in-progress, cancel) deployments.
+  # Reactions do not emit workflow events, so the daily schedule below is what
   # makes a newly approved comment appear without a manual dispatch.
   issue_comment:
     types:
@@ -36,13 +38,16 @@ concurrency:
 jobs:
   deploy:
     name: Build and deploy
-    # Ignore events on issues that are not the blog owner's posts and
-    # comments on pull requests.
+    # Ignore events on issues that are not the blog owner's posts, comments on
+    # pull requests, and comments written by anyone but the owner.
     if: |
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'schedule' ||
       (github.event_name == 'issues' && github.event.issue.user.login == github.repository_owner) ||
-      (github.event_name == 'issue_comment' && github.event.issue.pull_request == null && github.event.issue.user.login == github.repository_owner)
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request == null &&
+       github.event.issue.user.login == github.repository_owner &&
+       github.event.comment.user.login == github.repository_owner)
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -171,8 +176,10 @@ jobs:
         run: |
           set -euo pipefail
           cp config.toml output/config.toml
-          mkdir -p output/templates
+          mkdir -p output/templates output/static
           cp -r templates/. output/templates/
+          # slideout.min.js is vendored here now; the CSP allows script-src 'self'.
+          cp -r static/. output/static/
 
       - name: Build static site
         run: |
