@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import argparse
+import glob
 import html
 import os
 import re
@@ -335,6 +336,11 @@ def save_issue(issue, me, dir_name=BACKUP_DIR):
                 if is_me(c, me):
                     f.write("\n\n---\n\n")
                     f.write(c.body or "")
+    # An edited title changes the file name above, so remove the previous
+    # backup for this issue to keep exactly one file per issue.
+    for old_name in glob.glob(os.path.join(dir_name, f"{issue.number}_*.md")):
+        if os.path.abspath(old_name) != os.path.abspath(md_name):
+            os.remove(old_name)
 
 
 if __name__ == "__main__":

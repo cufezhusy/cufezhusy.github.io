@@ -83,15 +83,52 @@ jobs:
           python main.py "$REPO" --issue_number "$ISSUE_NUMBER"
 
       - name: Push README
+        env:
+          # Only the retry path needs the API: it regenerates on top of the
+          # latest main when another run pushed first.
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
           set -euo pipefail
           git config --local user.email "shengyao.zhu@gmail.com"
           git config --local user.name "cufezhusy"
-          git add -- README.md BACKUP
-          if git diff --cached --quiet; then
+
+          commit_generated() {
+            git add -- README.md BACKUP
+            if git diff --cached --quiet; then
+              return 1
+            fi
+            git commit -m 'update new blog'
+          }
+
+          if ! commit_generated; then
             echo "nothing to commit"
             exit 0
           fi
-          git commit -m 'update new blog'
+
+          # Overlapping runs (e.g. an issue is opened and then edited) can
+          # start from the same commit. A run that was cancelled by
+          # cancel-in-progress may still reach this step and push, leaving
+          # the newer run behind. If the push is rejected, reset onto the new
+          # head, regenerate from the current issue state, and retry.
+          for attempt in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              break
+            fi
+            echo "::warning::push rejected (attempt $attempt); regenerating on latest main"
+            git fetch --quiet origin main
+            git reset --hard --quiet origin/main
+            source venv/bin/activate
+            python main.py "$REPO" --issue_number "$ISSUE_NUMBER"
+            if ! commit_generated; then
+              echo "nothing to commit after syncing with main"
+              exit 0
+            fi
+          done
           # Do not swallow failures: a broken push should fail the run loudly.
-          git push
+          echo "::error::could not push README after 3 attempts"
+          exit 1
