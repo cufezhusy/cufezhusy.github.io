@@ -9,11 +9,20 @@ on:
       - reopened
       - labeled
       - unlabeled
+  # Any comment on one of the owner's posts refreshes the static comment
+  # section. Comments are untrusted input, so the rendering/build steps below
+  # never receive a token.
+  issue_comment:
+    types:
+      - created
+      - edited
+      - deleted
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
+  issues: read
   pages: write
   id-token: write
 
@@ -23,14 +32,23 @@ concurrency:
 
 jobs:
   deploy:
+    name: Build and deploy
+    # Ignore events on issues that are not the blog owner's posts and
+    # comments on pull requests.
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issues' && github.event.issue.user.login == github.repository_owner) ||
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request == null && github.event.issue.user.login == github.repository_owner)
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
-      GH_TOKEN: ${{ github.token }}
       ISITE_VERSION: v0.2.2
       ZOLA_VERSION: v0.20.0
+      # Pinned theme revision. Keep in sync with the copy in templates/page.html.
+      EVEN_REVISION: 994bfdb426a75f6615a2da649d9eb57870b1ca88
       # 固定制品的 SHA256，更新版本时需同步更新
       ISITE_SHA256: cfacb752ba5828635bef2e3077c24a53c18f02a6e4a7f610a80126d60653a188
       ZOLA_SHA256: ca7ed5b33a739c5b5b35a0e207e5c3578a652cd12b61c675763b3ff34c322d08
@@ -42,6 +60,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Do not leave the checkout token in .git/config.
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-site.txt
+
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
@@ -49,6 +78,10 @@ jobs:
           key: gitblog-deps-${{ runner.os }}-isite-${{ env.ISITE_VERSION }}-zola-${{ env.ZOLA_VERSION }}
 
       - name: Download and verify dependencies
+        env:
+          # Scoped, short-lived token with no repository write access, used by
+          # `gh` to download public release assets.
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           CACHE="$HOME/.cache/gitblog-deps"
@@ -64,17 +97,76 @@ jobs:
           tar zxf "$CACHE/isite.tar.gz" -C /tmp && mv /tmp/isite /usr/local/bin
           tar zxf "$CACHE/zola.tar.gz" -C /tmp && mv /tmp/zola /usr/local/bin
 
-      - name: Generate markdown
+      # isite v0.2.2 has no --theme-revision, but it reuses an existing
+      # `output/themes/even` directory instead of cloning. Pre-cloning at a
+      # fixed commit keeps the theme reproducible and in sync with the local
+      # page.html copy.
+      - name: Pin even theme
         run: |
-          isite generate --user $USER --repo $REPO --theme even --theme-repo getzola/even --title $BLOG_TITLE
+          set -euo pipefail
+          mkdir -p output/themes
+          rm -rf output/themes/even
+          git clone --quiet https://github.com/getzola/even output/themes/even
+          git -C output/themes/even checkout --quiet "$EVEN_REVISION"
+          test "$(git -C output/themes/even rev-parse HEAD)" = "$EVEN_REVISION"
+
+      - name: Generate markdown from issues
+        env:
+          # Scoped, short-lived token (no repository write access). It is
+          # exposed only to this step, which needs to read issues and
+          # comments. Do not move it to the job level: later steps process
+          # untrusted comment text.
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          isite generate --user "$USER" --repo "$REPO" --theme even --theme-repo getzola/even --title "$BLOG_TITLE"
+
+      - name: Render and sanitize comments
+        run: |
+          set -euo pipefail
+          python -m venv venv
+          source venv/bin/activate
+          python -m pip install --disable-pip-version-check --require-hashes -r requirements-site.txt
+          python scripts/extract_comments.py output/content output/comments.json
+
+      - name: Assemble Zola project
+        run: |
+          set -euo pipefail
           cp config.toml output/config.toml
-          cd output && zola build --base-url $BASE_URL
+          mkdir -p output/templates
+          cp -r templates/. output/templates/
+
+      - name: Build static site
+        run: |
+          set -euo pipefail
+          cd output
+          zola build --base-url "$BASE_URL"
+
+      - name: Check output for the workflow token
+        env:
+          # Only a literal comparison; the value is never printed. Scanning for
+          # generic token *patterns* would let a commenter block deploys by
+          # posting a fake token, so only this run's ephemeral token is checked.
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error::GITHUB_TOKEN is unavailable; cannot verify build output."
+            exit 1
+          fi
+          if grep -rIqF -- "$GH_TOKEN" output/public; then
+            echo "::error::The workflow token appears in generated output; refusing to deploy."
+            exit 1
+          fi
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'output/public'
+          path: "output/public"
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

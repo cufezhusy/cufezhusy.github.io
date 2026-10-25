@@ -1,0 +1,14 @@
+# Dependencies for rendering comments during the Pages build.
+#
+# These run on untrusted issue comments in CI, so versions and artifacts are
+# pinned with SHA256 hashes (`pip install --require-hashes`). To upgrade,
+# update the version and all `--hash` lines for that package.
+marko==2.2.4 \
+    --hash=sha256:d80510506edba096ec49d4720a09645fa0bb78e7b7b88697f20032fc19730aa9 \
+    --hash=sha256:c042c66f835425673123d7536b39b4660de3b68e30078c70fd26245b31170683
+nh3==0.3.7 \
+    --hash=sha256:70f5ac8626e899a4bab0ef74ca2f5bd602f49c7b739e6e5026b4afc6d63dac42 \
+    --hash=sha256:71860d01c16f4d8c72e334e0674beb2b0899dbd0bf760de18932ef4390303848
+tomli-w==1.2.0 \
+    --hash=sha256:188306098d013b691fcadc011abd66727d3c414c571bb01b1a174ba8c983cf90 \
+    --hash=sha256:2dd14fac5a47c27be9cd4c976af5a12d87fb1f0b4512f81d69cce3b35ae25021
