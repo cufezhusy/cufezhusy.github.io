@@ -2,7 +2,7 @@
 My personal blog([About Me])(https://github.com/cufezhusy/szhu.github.io/issues/2)
 
 ## 最近更新
-- [哥本哈根的秋天](https://github.com/cufezhusy/cufezhusy.github.io/issues/28)--2026-10-25
+- [秋天来了，让人想起1873年](https://github.com/cufezhusy/cufezhusy.github.io/issues/28)--2026-10-25
 - [AI 时代，终于可以把那些不靠谱的想法也实现了](https://github.com/cufezhusy/cufezhusy.github.io/issues/27)--2026-10-25
 - [回了一趟国](https://github.com/cufezhusy/cufezhusy.github.io/issues/26)--2026-10-24
 - [How to Fix Invisible Mouse & White Screen in HOI4 on Linux (Steam)|如何在 Linux (Steam) 上解决《钢铁雄心4》鼠标隐形与开局白屏问题](https://github.com/cufezhusy/cufezhusy.github.io/issues/25)--2026-07-25
