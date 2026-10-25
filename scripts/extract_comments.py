@@ -188,20 +188,22 @@ def audit_html(html: str, where: str) -> None:
 def split_front_matter(path: Path) -> tuple[str, str]:
     """Split TOML front matter without trusting user-controlled text.
 
-    isite embeds raw comment bodies as TOML multi-line strings. A ``+++`` line
-    inside such a string must not be mistaken for the front matter terminator,
-    so candidates are accepted only when the TOML prefix parses.
+    isite embeds raw comment bodies as TOML multi-line strings and writes a
+    leading newline before the opening ``+++``. A ``+++`` line inside such a
+    string must not be mistaken for the front matter terminator, so candidates
+    are accepted only when the TOML prefix parses.
     """
     text = path.read_text(encoding="utf-8")
-    if not text.startswith("+++\n"):
+    opening = re.match(r"[ \t\r\n]*\+\+\+\n", text)
+    if not opening:
         raise SystemExit(f"error: {path}: missing TOML front matter")
 
-    search_from = 4
+    search_from = opening.end()
     while True:
         end = text.find("\n+++\n", search_from)
         if end == -1:
             raise SystemExit(f"error: {path}: unterminated TOML front matter")
-        candidate = text[4:end]
+        candidate = text[search_from:end]
         try:
             tomllib.loads(candidate)
         except tomllib.TOMLDecodeError:
