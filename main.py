@@ -6,7 +6,7 @@ import re
 from urllib.parse import urlparse
 
 from feedgen.feed import FeedGenerator
-from github import Github
+from github import Auth, Github
 from lxml.etree import CDATA
 from marko.ext.gfm import gfm as marko
 
@@ -36,6 +36,11 @@ FRIENDS_INFO_DICT = {
 
 
 def get_me(user):
+    # GitHub Actions' installation token cannot call GET /user, so the
+    # workflow passes the repository owner through the environment.
+    owner = os.getenv("REPO_OWNER") or os.getenv("GITHUB_REPOSITORY_OWNER")
+    if owner:
+        return owner
     return user.get_user().login
 
 
@@ -97,7 +102,7 @@ def format_time(time):
 
 
 def login(token):
-    return Github(token)
+    return Github(auth=Auth.Token(token))
 
 
 def get_repo(user: Github, repo: str):
@@ -130,7 +135,9 @@ def get_repo_labels(repo):
 
 
 def get_issues_from_label(repo, label):
-    return repo.get_issues(labels=(label,))
+    # PyGithub 2.x requires a list of label names here, not a tuple of
+    # github.Label.Label objects.
+    return repo.get_issues(labels=[label.name])
 
 
 def add_issue_info(issue, md):
@@ -309,7 +316,11 @@ def main(token, repo_name, issue_number=None, dir_name=BACKUP_DIR):
 
     # save md files to backup folder
     for issue in to_generate_issues:
-        save_issue(issue, me, dir_name)
+        # Anyone can open an issue in this public repo. Only back up the
+        # owner's issues, and skip pull requests (the REST API returns them
+        # from the issues endpoint as well).
+        if issue.pull_request is None and is_me(issue, me):
+            save_issue(issue, me, dir_name)
 
 
 def save_issue(issue, me, dir_name=BACKUP_DIR):

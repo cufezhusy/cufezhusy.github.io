@@ -1,0 +1,8 @@
+# Top-level dependencies for the README/RSS generator (main.py).
+# Regenerate requirements.txt after changing this file:
+#   uv pip compile requirements.in --generate-hashes \
+#     --python-version 3.12 --python-platform x86_64-unknown-linux-gnu \
+#     --output-file requirements.txt
+PyGithub==2.10.0
+feedgen==1.0.0
+marko==2.2.4
